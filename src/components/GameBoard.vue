@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col border">
+    <div class="flex flex-col w-max mx-auto border">
         <div v-for="row, ridx in board" class="flex justify-center mx-auto" :key="ridx">
             <Square v-for="col, cidx in row" :key="cidx" @click="click(ridx, cidx)" @mouseover="mouseOver(ridx, cidx)"
                 :color="col.color" :icon="col.icon" />
@@ -27,7 +27,7 @@ const START = 3
 const FINISH = 4
 
 const ROW = 16
-const COL = 30
+const COL = 43
 
 const start = ref(null)
 const destination = ref(null)
