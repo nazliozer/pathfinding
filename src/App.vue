@@ -1,8 +1,8 @@
 <template>
-  <GameBoard/>
+  <GameState/>
 </template>
 
 <script setup>
-import GameBoard from './components/GameBoard.vue';
+import GameState from './components/GameState.vue';
 </script>
 
