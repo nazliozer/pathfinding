@@ -34,6 +34,14 @@ const destination = ref(null)
 
 const board = reactive([])
 
+const x = () => {
+    const dst = board[destination[0]][destination[1]]
+    while (dst.prev) {
+        console.log(dst.prev)
+        dst = dst.prev
+    }
+}
+
 const createBoard = () => {
     for (let i = 0; i < ROW; i++) {
         board[i] = []
@@ -47,6 +55,8 @@ const createBoard = () => {
 }
 
 const reset = () => {
+    start.value = null
+    destination.value = null
     createBoard()
 }
 
@@ -76,7 +86,7 @@ const click = (ridx, cidx) => {
     emit('reset')
 }
 
-defineExpose({ reset })
+defineExpose({ reset, board, x })
 
 onMounted(() => {
     createBoard()

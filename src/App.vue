@@ -1,9 +1,7 @@
 <script setup>
-import Navbar from '../src/components/Navbar.vue'
-import GameState from './components/GameState.vue';
+import Game from './components/Game.vue';
 </script>
 
 <template>
-  <Navbar />
-  <GameState />
+  <Game />
 </template>

@@ -1,8 +1,9 @@
 <template>
     <div class="flex flex-col">
-        <button @click="clearGameBoard">Clear Board</button>
-        <button @click="selectStartPoint">Select Start : {{ selectStart }}</button>
-        <button @click="selectDestinationPoint">Select Destination: {{ selectDestination }}</button>
+        <Navbar @clearBoard="clearGameBoard" @selectStart="selectStartPoint" @selectDestination="selectDestinationPoint"
+            @startGame="startGame" />
+        <div class="text-center">{{ drawWall ? 'Click board to stop drawing wall' : 'Click board to start drawing wall' }}
+        </div>
         <GameBoard ref="gameBoardRef" :draw-wall="drawWall" :select-start="selectStart"
             :select-destination="selectDestination" @pointerdown="selectWall" @reset="reset" />
     </div>
@@ -12,6 +13,8 @@
 <script setup>
 import { ref } from 'vue';
 import GameBoard from './GameBoard.vue';
+import Navbar from './Navbar.vue'
+import { dfs } from '@/algos';
 
 const gameBoardRef = ref()
 
@@ -42,6 +45,13 @@ const selectDestinationPoint = () => {
 const reset = () => {
     selectStart.value = false
     selectDestination.value = false
+}
+
+const startGame = (game) => {
+    if (game == 'Depth First Search') {
+        dfs(gameBoardRef.value.board)
+        gameBoardRef.value.x()
+    }
 }
 
 </script>

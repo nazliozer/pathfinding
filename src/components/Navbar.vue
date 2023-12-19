@@ -1,7 +1,7 @@
 <template>
     <nav class="px-6 py-8 bg-indigo-600 flex justify-between items-center">
         <ul class="flex space-y-0 flex-row items-center space-x-10 mt-0">
-            <li>
+            <li class="cursor-pointer">
                 <div class="relative">
                     <button @click="show = !show"
                         class="flex items-center text-indigo-100 bg-indigo-600 rounded-md focus:outline-none">
@@ -15,27 +15,22 @@
                     </button>
 
                     <div v-show="show" class="py-2 mt-2 bg-indigo-500 rounded-md shadow-xl absolute w-44">
-                        <router-link to="/" @click="selectDropdownItem('Dropdown List 1')"
+                        <a v-for="algo in algos" to="/" @click="selectDropdownItem(algo)"
                             class="block px-4 py-2 text-sm text-indigo-100 hover:bg-indigo-400 hover:text-indigo-100">
-                            Dropdown List 1
-                        </router-link>
-                        <router-link to="/" @click="selectDropdownItem('Dropdown List 2')"
-                            class="block px-4 py-2 text-sm text-indigo-100 hover:bg-indigo-400 hover:text-indigo-100">
-                            Dropdown List 2
-                        </router-link>
-                        <router-link to="/" @click="selectDropdownItem('Dropdown List 3')"
-                            class="block px-4 py-2 text-sm text-indigo-100 hover:bg-indigo-400 hover:text-indigo-100">
-                            Dropdown List 3
-                        </router-link>
-                        <!-- Add more dropdown items as needed -->
+                            {{ algo }}
+                        </a>
                     </div>
                 </div>
             </li>
-            <li class="text-gray-100 hover:text-indigo-400">Select Start</li>
-            <li class="text-gray-100 hover:text-indigo-400">Select Destination</li>
-            <li class="text-gray-100 hover:text-indigo-400 bg-indigo-500 p-4 rounded-lg">Visualize {{ selectedDropdownItem
-            }}</li>
-            <li class="text-gray-100 hover:text-indigo-400">Reset Board</li>
+            <li class="text-gray-100 hover:text-indigo-400 cursor-pointer" @click="$emit('selectStart')">Select
+                Start</li>
+            <li class="text-gray-100 hover:text-indigo-400 cursor-pointer" @click="$emit('selectDestination')">Select
+                Destination</li>
+            <li class="text-gray-100 hover:text-indigo-400 bg-indigo-500 p-4 rounded-lg cursor-pointer" @click="start">
+                Visualize {{
+                    selectedDropdownItem
+                }}</li>
+            <li class="text-gray-100 hover:text-indigo-400 cursor-pointer" @click="$emit('clearBoard')">Reset Board</li>
         </ul>
         <div class="text-gray-100 text-lg font-bold uppercase">Pathfinder Visualizer</div>
     </nav>
@@ -45,9 +40,17 @@
 import { ref } from "vue";
 
 export default {
-    setup() {
+    emits: ['selectStart', 'startGame', 'selectDestination', 'clearBoard'],
+    setup(props, { emit }) {
         let show = ref(false);
         let selectedDropdownItem = ref("");
+
+        const algos = ['Depth First Search', 'Breadth First Search']
+
+        const start = () => {
+            if (!selectedDropdownItem.value) return
+            emit('startGame', selectedDropdownItem.value)
+        }
 
         const toggleNav = () => {
             show.value = !show.value;
@@ -55,12 +58,10 @@ export default {
 
         const selectDropdownItem = (item) => {
             selectedDropdownItem.value = item;
-            // Close the dropdown menu
             show.value = false;
-            // You can perform additional actions based on the selected item if needed
         };
 
-        return { show, selectedDropdownItem, toggleNav, selectDropdownItem };
+        return { show, selectedDropdownItem, algos, toggleNav, selectDropdownItem, start };
     },
 };
 </script>
