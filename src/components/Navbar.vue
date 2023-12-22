@@ -32,7 +32,7 @@
                 }}</li>
             <li class="text-gray-100 hover:text-indigo-400 cursor-pointer" @click="$emit('clearBoard')">Reset Board</li>
         </ul>
-        <div class="text-gray-100 text-lg font-bold uppercase">Pathfinder Visualizer</div>
+        <div class="text-gray-100 text-lg font-bold uppercase">Pathfinding Visualizer</div>
     </nav>
 </template>
 
@@ -40,15 +40,18 @@
 import { ref } from "vue";
 
 export default {
-    emits: ['selectStart', 'startGame', 'selectDestination', 'clearBoard'],
+    emits: ['selectStart', 'startGame', 'selectDestination', 'clearBoard', 'stop'],
     setup(props, { emit }) {
         let show = ref(false);
-        let selectedDropdownItem = ref("");
+        let selectedDropdownItem = ref("Depth First Search");
 
         const algos = ['Depth First Search', 'Breadth First Search']
 
         const start = () => {
-            if (!selectedDropdownItem.value) return
+            if (!selectedDropdownItem.value) {
+                assert('Select an algrithm to visualize.')
+                return;
+            }
             emit('startGame', selectedDropdownItem.value)
         }
 
