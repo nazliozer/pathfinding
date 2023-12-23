@@ -26,6 +26,7 @@ const props = defineProps({
 const start = ref(null)
 const destination = ref(null)
 const board = reactive([])
+const isVisualizing = ref(false)
 
 const createBoard = () => {
     for (let i = 0; i < props.rows; i++) {
@@ -44,11 +45,9 @@ const reset = () => {
     destination.value = null
     createBoard()
 }
-const isAvailable = (row, col) => {
-    return !((row === start.value?.ridx && col === start.value?.cidx) || (row === destination.value?.ridx && col === destination.value?.cidx))
-}
+
 const drawWall = (ridx, cidx) => {
-    if (!props.drawWall || !isAvailable(ridx, cidx)) return
+    if (!props.drawWall) return
     if (!board[ridx][cidx].visited) {
         board[ridx][cidx].color = "#2C3E50"
         board[ridx][cidx].isWall = true
@@ -58,14 +57,14 @@ const drawWall = (ridx, cidx) => {
 const selectPoints = (ridx, cidx) => {
     if (props.selectStart && !start.value) {
         board[ridx][cidx] = {
-            isWall: false,
+            visited: false,
             icon: 'fa-solid fa-chevron-right'
         }
         start.value = { ridx: ridx, cidx: cidx }
     }
     if (props.selectDestination && !destination.value) {
         board[ridx][cidx] = {
-            isWall: false,
+            visited: false,
             icon: 'fa-solid fa-crosshairs'
         }
         destination.value = { ridx: ridx, cidx: cidx }
@@ -74,14 +73,17 @@ const selectPoints = (ridx, cidx) => {
 }
 
 const visualizePath = async (algorithm) => {
+    if (isVisualizing.value) return
     if (!start.value || !destination.value) {
         alert('Please select start and dest.')
         return;
     }
-
+    isVisualizing.value = true
+    resetStates()
     const visited = algorithm(board, start.value.ridx, start.value.cidx, destination.value.ridx, destination.value.cidx)
     await drawVisiteds(visited)
-    drawPath()
+    await drawPath()
+    isVisualizing.value = false
 }
 
 const drawVisiteds = async (visited) => {
@@ -94,6 +96,7 @@ const drawVisiteds = async (visited) => {
 
 const drawPath = async () => {
     let cur = board[destination.value.ridx][destination.value.cidx]
+    if (!cur.prev) alert('Path not found')
     while (cur) {
         let prev = null
         cur.color = '#1C64F2'
@@ -105,7 +108,30 @@ const drawPath = async () => {
     }
 }
 
-defineExpose({ reset, visualizePath })
+const resetStates = () => {
+    for (let row = 0; row < props.rows; row++) {
+        for (let col = 0; col < props.cols; col++) {
+
+            if (!board[row][col].isWall) {
+                board[row][col].visited = false
+                board[row][col].color = 'white'
+            }
+        }
+    }
+}
+
+const clearWalls = () => {
+    for (let row = 0; row < props.rows; row++) {
+        for (let col = 0; col < props.cols; col++) {
+            if (board[row][col].isWall) {
+                board[row][col].isWall = false
+                board[row][col].color = 'white'
+            }
+        }
+    }
+}
+
+defineExpose({ reset, visualizePath, clearWalls })
 
 onMounted(() => {
     createBoard()

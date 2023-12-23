@@ -1,2 +1,2 @@
 export const ROW = 16
-export const COL = 30
+export const COL = 32

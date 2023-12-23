@@ -1,9 +1,9 @@
 <template>
     <div class="flex flex-col">
         <Navbar @clearBoard="clearGameBoard" @selectStart="selectStartPoint" @selectDestination="selectDestinationPoint"
-            @startGame="startGame" />
+            @startGame="startGame" @clearWalls="clearWalls" />
         <InfoBar />
-        <div class="text-center p-3 bg-[#2C3D4F] text-white my-3">
+        <div class="text-center p-3 bg-[#2C3D4F] text-white mb-3">
             {{ drawWall ? 'Click board to stop drawing wall' : 'Click board to start drawing wall' }}
         </div>
         <GameBoard ref="gameBoardRef" :rows="ROW" :cols="COL" :draw-wall="drawWall" :select-start="selectStart"
@@ -17,7 +17,7 @@ import { ref } from 'vue';
 import GameBoard from './GameBoard.vue';
 import Navbar from './Navbar.vue'
 import { ROW, COL } from '@/constants.js'
-import { bfs, dfsR, dijkstra, astar } from '@/algorithms';
+import { bfs, dfsR, aStar, dijkstra } from '@/algorithms';
 import InfoBar from './InfoBar.vue';
 
 const gameBoardRef = ref()
@@ -27,6 +27,10 @@ const drawWall = ref(false)
 
 const clearGameBoard = () => {
     gameBoardRef.value.reset()
+}
+
+const clearWalls = () => {
+    gameBoardRef.value.clearWalls()
 }
 
 const selectWall = () => {
@@ -57,7 +61,7 @@ const startGame = (algorithm) => {
     else if (algorithm === 'Dijkstra')
         gameBoardRef.value.visualizePath(dijkstra)
     else if (algorithm === 'A*')
-        gameBoardRef.value.visualizePath(astar)
+        gameBoardRef.value.visualizePath(aStar)
 }
 
 </script>

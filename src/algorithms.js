@@ -74,6 +74,82 @@ export const bfs = (board, sridx, scidx, dridx, dcidx) => {
   }
 };
 
+export const aStar = (board, sridx, scidx, dridx, dcidx) => {
+  const calculateHeuristic = (row, col) => {
+    // Manhatten distance heuristic
+    return Math.abs(row - dridx) + Math.abs(col - dcidx);
+  };
+
+  const visited = [];
+  const openSet = [];
+  openSet.push([sridx, scidx]);
+
+  const gScore = {};
+  const fScore = {};
+
+  gScore[`${sridx}-${scidx}`] = 0; //Current
+  fScore[`${sridx}-${scidx}`] = calculateHeuristic(sridx, scidx); //Total
+
+  while (openSet.length) {
+    // Find the node with the lowest f-score in the open set
+    let cur = openSet.reduce((minNode, node) => {
+      return fScore[`${node[0]}-${node[1]}`] <
+        fScore[`${minNode[0]}-${minNode[1]}`]
+        ? node
+        : minNode;
+    });
+
+    openSet.splice(openSet.indexOf(cur), 1);
+    let curSquare = board[cur[0]][cur[1]];
+
+    if (cur[0] === dridx && cur[1] === dcidx) {
+      visited.push(cur);
+      return visited;
+    }
+
+    if (!curSquare.visited && !curSquare.isWall) {
+      curSquare.visited = true;
+      visited.push(cur);
+
+      for (const direction of directions) {
+        const newRow = cur[0] + direction[0];
+        const newCol = cur[1] + direction[1];
+
+        if (
+          newRow >= 0 &&
+          newRow < board.length &&
+          newCol >= 0 &&
+          newCol < board[0].length
+        ) {
+          let nextSquare = board[newRow][newCol];
+
+          if (!nextSquare.visited) {
+            const tentativeGScore = gScore[`${cur[0]}-${cur[1]}`] + 1;
+
+            if (
+              !gScore[`${newRow}-${newCol}`] ||
+              tentativeGScore < gScore[`${newRow}-${newCol}`]
+            ) {
+              nextSquare.prev = cur;
+              gScore[`${newRow}-${newCol}`] = tentativeGScore;
+              fScore[`${newRow}-${newCol}`] =
+                tentativeGScore + calculateHeuristic(newRow, newCol);
+
+              if (
+                !openSet.some(
+                  (node) => node[0] === newRow && node[1] === newCol
+                )
+              ) {
+                openSet.push([newRow, newCol]);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
 export const dijkstra = (board, sridx, scidx, dridx, dcidx) => {
   const visited = [];
   const distances = [];
@@ -124,70 +200,4 @@ export const dijkstra = (board, sridx, scidx, dridx, dcidx) => {
 
   // If the destination is not reachable, return the visited array so far
   return visited;
-};
-
-export const astar = (board, sridx, scidx, dridx, dcidx) => {
-  const visited = [];
-  const openSet = [];
-  const startNode = board[sridx][scidx];
-  const goalNode = board[dridx][dcidx];
-
-  startNode.g = 0;
-  startNode.h = heuristic(sridx, scidx, dridx, dcidx);
-  startNode.f = startNode.g + startNode.h;
-
-  openSet.push(startNode);
-
-  while (openSet.length) {
-    // Find the node with the lowest f value in the open set
-    let currentNode = openSet.reduce((minNode, node) =>
-      node.f < minNode.f ? node : minNode
-    );
-
-    if (currentNode === goalNode) {
-      // Goal reached, no need to continue searching
-      visited.push([currentNode.row, currentNode.col]);
-      break;
-    }
-
-    openSet.splice(openSet.indexOf(currentNode), 1);
-    visited.push([currentNode.row, currentNode.col]);
-
-    for (const direction of directions) {
-      const newRow = currentNode.row + direction[0];
-      const newCol = currentNode.col + direction[1];
-
-      if (
-        newRow >= 0 &&
-        newRow < board.length &&
-        newCol >= 0 &&
-        newCol < board[0].length
-      ) {
-        let neighbor = board[newRow][newCol];
-
-        if (
-          !neighbor.isWall &&
-          !visited.some((node) => node[0] === newRow && node[1] === newCol)
-        ) {
-          let tentativeG = currentNode.g + 1; // Assuming cost of moving from one cell to another is 1
-
-          if (!openSet.includes(neighbor) || tentativeG < neighbor.g) {
-            neighbor.prev = currentNode;
-            neighbor.g = tentativeG;
-            neighbor.h = heuristic(newRow, newCol, dridx, dcidx);
-            neighbor.f = neighbor.g + neighbor.h;
-
-            if (!openSet.includes(neighbor)) {
-              openSet.push(neighbor);
-            }
-          }
-        }
-      }
-    }
-  }
-
-  return visited;
-};
-const heuristic = (startRow, startCol, goalRow, goalCol) => {
-  return Math.abs(startRow - goalRow) + Math.abs(startCol - goalCol);
 };

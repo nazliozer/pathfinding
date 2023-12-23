@@ -31,6 +31,7 @@
                     selectedDropdownItem
                 }}</li>
             <li class="text-gray-100 hover:text-indigo-400 cursor-pointer" @click="$emit('clearBoard')">Reset Board</li>
+            <li class="text-gray-100 hover:text-indigo-400 cursor-pointer" @click="$emit('clearWalls')">Reset Walls</li>
         </ul>
         <div class="text-gray-100  uppercase">
             <p class="text-lg font-bold">Pathfinding Visualizer</p>
@@ -43,7 +44,7 @@
 import { ref } from "vue";
 
 export default {
-    emits: ['selectStart', 'startGame', 'selectDestination', 'clearBoard', 'stop'],
+    emits: ['selectStart', 'startGame', 'selectDestination', 'clearBoard', 'stop', 'clearWalls'],
     setup(props, { emit }) {
         let show = ref(false);
         let selectedDropdownItem = ref("Depth First Search");
