@@ -32,7 +32,10 @@
                 }}</li>
             <li class="text-gray-100 hover:text-indigo-400 cursor-pointer" @click="$emit('clearBoard')">Reset Board</li>
         </ul>
-        <div class="text-gray-100 text-lg font-bold uppercase">Pathfinding Visualizer</div>
+        <div class="text-gray-100  uppercase">
+            <p class="text-lg font-bold">Pathfinding Visualizer</p>
+            <p class="text-xs italic text-end font-extralight">Efe Özdemir<br /> Nazlı Hilal Özer</p>
+        </div>
     </nav>
 </template>
 
@@ -45,7 +48,7 @@ export default {
         let show = ref(false);
         let selectedDropdownItem = ref("Depth First Search");
 
-        const algos = ['Depth First Search', 'Breadth First Search']
+        const algos = ['Depth First Search', 'Breadth First Search', 'Dijkstra', 'A*']
 
         const start = () => {
             if (!selectedDropdownItem.value) {

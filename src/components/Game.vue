@@ -2,7 +2,9 @@
     <div class="flex flex-col">
         <Navbar @clearBoard="clearGameBoard" @selectStart="selectStartPoint" @selectDestination="selectDestinationPoint"
             @startGame="startGame" />
-        <div class="text-center">{{ drawWall ? 'Click board to stop drawing wall' : 'Click board to start drawing wall' }}
+        <InfoBar />
+        <div class="text-center p-3 bg-[#2C3D4F] text-white my-3">
+            {{ drawWall ? 'Click board to stop drawing wall' : 'Click board to start drawing wall' }}
         </div>
         <GameBoard ref="gameBoardRef" :rows="ROW" :cols="COL" :draw-wall="drawWall" :select-start="selectStart"
             :select-destination="selectDestination" @pointerdown="selectWall" @reset="reset" />
@@ -15,7 +17,8 @@ import { ref } from 'vue';
 import GameBoard from './GameBoard.vue';
 import Navbar from './Navbar.vue'
 import { ROW, COL } from '@/constants.js'
-import { bfs, dfsR } from '@/algorithms';
+import { bfs, dfsR, dijkstra, astar } from '@/algorithms';
+import InfoBar from './InfoBar.vue';
 
 const gameBoardRef = ref()
 const selectStart = ref(false)
@@ -51,6 +54,10 @@ const startGame = (algorithm) => {
         gameBoardRef.value.visualizePath(dfsR)
     else if (algorithm === 'Breadth First Search')
         gameBoardRef.value.visualizePath(bfs)
+    else if (algorithm === 'Dijkstra')
+        gameBoardRef.value.visualizePath(dijkstra)
+    else if (algorithm === 'A*')
+        gameBoardRef.value.visualizePath(astar)
 }
 
 </script>

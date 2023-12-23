@@ -44,9 +44,11 @@ const reset = () => {
     destination.value = null
     createBoard()
 }
-
+const isAvailable = (row, col) => {
+    return !((row === start.value?.ridx && col === start.value?.cidx) || (row === destination.value?.ridx && col === destination.value?.cidx))
+}
 const drawWall = (ridx, cidx) => {
-    if (!props.drawWall) return
+    if (!props.drawWall || !isAvailable(ridx, cidx)) return
     if (!board[ridx][cidx].visited) {
         board[ridx][cidx].color = "#2C3E50"
         board[ridx][cidx].isWall = true
@@ -56,14 +58,14 @@ const drawWall = (ridx, cidx) => {
 const selectPoints = (ridx, cidx) => {
     if (props.selectStart && !start.value) {
         board[ridx][cidx] = {
-            visited: false,
+            isWall: false,
             icon: 'fa-solid fa-chevron-right'
         }
         start.value = { ridx: ridx, cidx: cidx }
     }
     if (props.selectDestination && !destination.value) {
         board[ridx][cidx] = {
-            visited: false,
+            isWall: false,
             icon: 'fa-solid fa-crosshairs'
         }
         destination.value = { ridx: ridx, cidx: cidx }
@@ -76,7 +78,7 @@ const visualizePath = async (algorithm) => {
         alert('Please select start and dest.')
         return;
     }
-    
+
     const visited = algorithm(board, start.value.ridx, start.value.cidx, destination.value.ridx, destination.value.cidx)
     await drawVisiteds(visited)
     drawPath()
