@@ -46,8 +46,12 @@ const reset = () => {
     createBoard()
 }
 
+const isAvailable = (row, col) => {
+    return !((row === start.value?.ridx && col === start.value?.cidx) || (row === destination.value?.ridx && col === destination.value?.cidx))
+}
+
 const drawWall = (ridx, cidx) => {
-    if (!props.drawWall) return
+    if (!props.drawWall || !isAvailable(ridx, cidx)) return
     if (!board[ridx][cidx].visited) {
         board[ridx][cidx].color = "#2C3E50"
         board[ridx][cidx].isWall = true
