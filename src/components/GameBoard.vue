@@ -12,6 +12,7 @@
 import { sleep } from '@/helpers'
 import { onMounted, reactive, ref } from "vue"
 import Square from "./Square.vue";
+import { UNVISITED, WALL, PATH, VISITED } from '@/constants';
 
 const emit = defineEmits(['reset'])
 
@@ -34,7 +35,7 @@ const createBoard = () => {
         for (let j = 0; j < props.cols; j++) {
             board[i][j] = {
                 visited: false,
-                color: "white"
+                color: UNVISITED
             }
         }
     }
@@ -53,7 +54,7 @@ const isAvailable = (row, col) => {
 const drawWall = (ridx, cidx) => {
     if (!props.drawWall || !isAvailable(ridx, cidx)) return
     if (!board[ridx][cidx].visited) {
-        board[ridx][cidx].color = "#2C3E50"
+        board[ridx][cidx].color = WALL
         board[ridx][cidx].isWall = true
     }
 }
@@ -93,7 +94,7 @@ const visualizePath = async (algorithm) => {
 const drawVisiteds = async (visited) => {
     if (!visited) return
     for (let i of visited) {
-        board[i[0]][i[1]].color = '#31C48D'
+        board[i[0]][i[1]].color = VISITED
         await sleep(10)
     }
 }
@@ -103,7 +104,7 @@ const drawPath = async () => {
     if (!cur.prev) alert('Path not found')
     while (cur) {
         let prev = null
-        cur.color = '#1C64F2'
+        cur.color = PATH
         if (cur.prev) {
             prev = board[cur.prev[0]][cur.prev[1]]
         }
@@ -118,7 +119,7 @@ const resetStates = () => {
 
             if (!board[row][col].isWall) {
                 board[row][col].visited = false
-                board[row][col].color = 'white'
+                board[row][col].color = UNVISITED
             }
         }
     }
@@ -129,7 +130,7 @@ const clearWalls = () => {
         for (let col = 0; col < props.cols; col++) {
             if (board[row][col].isWall) {
                 board[row][col].isWall = false
-                board[row][col].color = 'white'
+                board[row][col].color = UNVISITED
             }
         }
     }

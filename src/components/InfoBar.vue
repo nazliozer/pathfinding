@@ -9,15 +9,15 @@
             <p>Destination Point</p>
         </li>
         <li class="flex items-center justify-center space-x-2">
-            <Square color="#31C48D" />
+            <Square :color="VISITED" />
             <p>Visited Node</p>
         </li>
         <li class="flex items-center justify-center space-x-2">
-            <Square color="#2C3E50" />
+            <Square :color="WALL" />
             <p>Wall Node</p>
         </li>
         <li class="flex items-center justify-center space-x-2">
-            <Square color="#1C64F2" />
+            <Square :color="PATH" />
             <p>Shortest-path Node</p>
         </li>
     </ul>
@@ -25,5 +25,5 @@
 
 <script setup>
 import Square from "./Square.vue";
-
+import { WALL, VISITED, PATH } from "@/constants";
 </script>

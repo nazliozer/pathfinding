@@ -5,7 +5,7 @@ const directions = [
   [0, 1],
 ];
 
-export const dfsR = (board, startRow, startCol, destRow, destCol) => {
+export const dfs = (board, startRow, startCol, destRow, destCol) => {
   const visited = [];
   let found = false;
   const dfsHelper = (row, col, prev = null) => {
@@ -76,7 +76,6 @@ export const bfs = (board, sridx, scidx, dridx, dcidx) => {
 
 export const aStar = (board, sridx, scidx, dridx, dcidx) => {
   const calculateHeuristic = (row, col) => {
-    // Manhatten distance heuristic
     return Math.abs(row - dridx) + Math.abs(col - dcidx);
   };
 
@@ -87,11 +86,10 @@ export const aStar = (board, sridx, scidx, dridx, dcidx) => {
   const gScore = {};
   const fScore = {};
 
-  gScore[`${sridx}-${scidx}`] = 0; //Current
-  fScore[`${sridx}-${scidx}`] = calculateHeuristic(sridx, scidx); //Total
+  gScore[`${sridx}-${scidx}`] = 0;
+  fScore[`${sridx}-${scidx}`] = calculateHeuristic(sridx, scidx);
 
   while (openSet.length) {
-    // Find the node with the lowest f-score in the open set
     let cur = openSet.reduce((minNode, node) => {
       return fScore[`${node[0]}-${node[1]}`] <
         fScore[`${minNode[0]}-${minNode[1]}`]
@@ -169,7 +167,6 @@ export const dijkstra = (board, sridx, scidx, dridx, dcidx) => {
     let curCol = cur[1];
 
     if (curRow === dridx && curCol === dcidx) {
-      // Destination reached
       return visited;
     }
 
@@ -183,21 +180,19 @@ export const dijkstra = (board, sridx, scidx, dridx, dcidx) => {
         newCol >= 0 &&
         newCol < board[0].length
       ) {
-        let nextDist = distances[curRow][curCol] + 1; // Assuming uniform edge weights
+        let nextDist = distances[curRow][curCol] + 1;
 
         if (
           nextDist < distances[newRow][newCol] &&
           !board[newRow][newCol].isWall
         ) {
           distances[newRow][newCol] = nextDist;
-          board[newRow][newCol].prev = [curRow, curCol]; // Update the prev property
+          board[newRow][newCol].prev = [curRow, curCol];
           visited.push([newRow, newCol]);
           queue.push([newRow, newCol]);
         }
       }
     }
   }
-
-  // If the destination is not reachable, return the visited array so far
   return visited;
 };

@@ -17,7 +17,7 @@ import { ref } from 'vue';
 import GameBoard from './GameBoard.vue';
 import Navbar from './Navbar.vue'
 import { ROW, COL } from '@/constants.js'
-import { bfs, dfsR, aStar, dijkstra } from '@/algorithms';
+import { bfs, dfs, aStar, dijkstra } from '@/algorithms';
 import InfoBar from './InfoBar.vue';
 
 const gameBoardRef = ref()
@@ -55,7 +55,7 @@ const reset = () => {
 
 const startGame = (algorithm) => {
     if (algorithm === 'Depth First Search')
-        gameBoardRef.value.visualizePath(dfsR)
+        gameBoardRef.value.visualizePath(dfs)
     else if (algorithm === 'Breadth First Search')
         gameBoardRef.value.visualizePath(bfs)
     else if (algorithm === 'Dijkstra')
